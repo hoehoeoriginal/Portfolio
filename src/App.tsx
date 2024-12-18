@@ -142,5 +142,5 @@ const App = () => {
   );
 };
 
-// Hello world
+// Hello world!
 export default App;
