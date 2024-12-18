@@ -1,0 +1,72 @@
+/* 全体の余白リセット */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* アプリ全体のコンテナ */
+.app-container {
+  position: relative;
+  overflow: hidden;
+
+  width: 100%;
+  height: 100vh;
+}
+
+.icon-wrapper {
+  position: absolute;
+}
+
+.icon {
+  font-size: 3rem;
+  opacity: 1;
+}
+
+.wave {
+  position: absolute;
+  width: 60px;
+  height: 10px;
+  background: url('/ripple.jpg') no-repeat center center / cover;
+  bottom: -10px;
+  /* アイコンの下に配置 */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 各アイコンの色を指定 */
+.react-color {
+  color: #61dafb;
+}
+
+.js-color {
+  color: #f7df1e;
+}
+
+.html-color {
+  color: #e44d26;
+}
+
+.css-color {
+  color: #2965f1;
+}
+
+.c-color {
+  color: #00599c;
+}
+
+.cpp-color {
+  color: #00599c;
+}
+
+.vb-color {
+  color: #5c2d91;
+}
+
+.github-color {
+  color: #333;
+}
+
+.ts-color {
+  color: #3178c6;
+}
