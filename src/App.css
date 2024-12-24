@@ -7,6 +7,7 @@
 
 /* アプリ全体のコンテナ */
 .app-container {
+  background: rgb(111, 160, 203);
   position: relative;
   overflow: hidden;
 
@@ -26,12 +27,16 @@
 .wave {
   position: absolute;
   width: 60px;
-  height: 10px;
-  background: url('/ripple.jpg') no-repeat center center / cover;
+  height: 50px;
+  /* background: url('/ripple.jpg') no-repeat center center / cover; */
   bottom: -10px;
   /* アイコンの下に配置 */
   left: 50%;
+  /* 親要素（icon-wrapper）の中央 */
+  z-index: -1;
   transform: translateX(-50%);
+  /* opacity: 0; */
+  /* 初期状態で非表示 */
 }
 
 /* 各アイコンの色を指定 */
