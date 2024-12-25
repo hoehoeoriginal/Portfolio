@@ -1,0 +1,29 @@
+.icons {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.icon {
+  font-size: 15rem;
+  position: absolute;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.popup {
+  display: none;
+  position: absolute;
+  top: -30px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+}
+
+.icon:hover .popup {
+  display: block;
+}

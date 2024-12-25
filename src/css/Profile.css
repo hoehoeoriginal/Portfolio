@@ -1,0 +1,32 @@
+/* Profile.css */
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+  background: url('/Milkyway.jpg') no-repeat center center/cover;
+  /* 修正: 背景画像の適用 */
+  color: white;
+}
+
+.profile-content {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background-color: rgba(34, 34, 34, 0.8);
+  /* 修正: 背景を透過調整 */
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.profile-content img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.profile-content p {
+  font-size: 16px;
+  line-height: 1.5;
+}
