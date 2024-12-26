@@ -12,21 +12,24 @@ import { DiVisualstudio } from "react-icons/di";
 import "../css/Home.css";
 
 const Home: React.FC = () => {
+
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]); // 各アイコンのDOMを参照
+  const animationRefs = useRef<(gsap.core.Tween | null)[]>([]); // 各アイコンのアニメーションを保持
   const [currentIndex, setCurrentIndex] = useState(0); // 現在アニメーション中のアイコンを追跡
   const [isAnimating, setIsAnimating] = useState(false); // アニメーション中かどうかを管理
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const icons = [
-    { icon: <FaHtml5 />, color: "#E34F26", name: "HTML5" },
-    { icon: <FaCss3Alt />, color: "#1572B6", name: "CSS3" },
-    { icon: <FaJsSquare />, color: "#F7DF1E", name: "JavaScript" },
-    { icon: <SiTypescript />, color: "#007ACC", name: "TypeScript" },
-    { icon: <FaReact />, color: "#61DBFB", name: "React" },
-    { icon: <FaGithub />, color: "#333", name: "GitHub" },
-    { icon: <DiVisualstudio />, color: "#5C2D91", name: "Visual Studio" },
-    { icon: <SiC />, color: "#A8B9CC", name: "C" },
-    { icon: <SiCplusplus />, color: "#00599C", name: "C++" },
-    { icon: <SiProgate />, color: "#F5A623", name: "Progate" }, // プロゲートアイコン追加
+    { icon: <FaHtml5 />, color: "#E34F26", name: "HTML5", rating: 5, comment: "Webページの基本構造" },
+    { icon: <FaCss3Alt />, color: "#1572B6", name: "CSS3", rating: 4, comment: "スタイリングが可能" },
+    { icon: <FaJsSquare />, color: "#F7DF1E", name: "JavaScript", rating: 5, comment: "動的な動作を実現" },
+    { icon: <SiTypescript />, color: "#007ACC", name: "TypeScript", rating: 5, comment: "型安全なJS" },
+    { icon: <FaReact />, color: "#61DBFB", name: "React", rating: 5, comment: "コンポーネントベースのUI" },
+    { icon: <FaGithub />, color: "#333", name: "GitHub", rating: 4, comment: "コード管理プラットフォーム" },
+    { icon: <DiVisualstudio />, color: "#5C2D91", name: "Visual Studio", rating: 4, comment: "強力なIDE" },
+    { icon: <SiC />, color: "#A8B9CC", name: "C", rating: 3, comment: "低レベルプログラミング" },
+    { icon: <SiCplusplus />, color: "#00599C", name: "C++", rating: 4, comment: "高性能プログラミング" },
+    { icon: <SiProgate />, color: "#F5A623", name: "Progate", rating: 4, comment: "初心者向け学習サイト" },
   ];
 
   // ランダムに8方向の移動を設定
@@ -42,14 +45,19 @@ const Home: React.FC = () => {
   ];
 
   // アニメーション開始
-  const animateIcon = (index: number) => {
-    if (!iconRefs.current[index] || isAnimating) return; // 他のアニメーション中はスキップ
+  const animateIcon = () => {
+    const iconElement = iconRefs.current[currentIndex];
+    if (isAnimating || !iconElement) return; // 他のアニメーション中はスキップ
 
-    const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-    const iconElement = iconRefs.current[index];
+    const randomDirection =
+      directions[Math.floor(Math.random() * directions.length)];
 
     setIsAnimating(true); // アニメーション中フラグを設定
 
+    // 既存のアニメーションを停止
+    // animationRefs.current[index]?.kill();
+
+    // 新しいアニメーションを開始
     gsap.fromTo(
       iconElement,
       {
@@ -62,20 +70,30 @@ const Home: React.FC = () => {
         y: `${randomDirection.endY}vh`, // ランダムな方向に移動
         opacity: 1,
         duration: 5,
+        ease: "linear",
         onComplete: () => {
-          // 次のアイコンをアニメーション
-          setIsAnimating(false);
-          setCurrentIndex((prevIndex) => (prevIndex + 1) % icons.length); // 次のアイコンに移動
+          setIsAnimating(false); // アニメーション終了フラグを解除
+          setCurrentIndex((prev) => (prev + 1) % icons.length); // 次のアイコンに進む
         },
       }
     );
   };
 
   useEffect(() => {
-    if (!isAnimating) {
-      animateIcon(currentIndex); // アニメーションを開始
+    if (hoveredIndex === null && !isAnimating) {
+      animateIcon(); // ホバー中でなければアニメーションを実行
     }
-  }, [currentIndex, isAnimating]); // currentIndexが変化するたびに実行
+  }, [currentIndex, hoveredIndex, isAnimating]); // currentIndexが変化するたびに実行
+
+  const handleMouseEnter = (index: number) => {
+    setHoveredIndex(index);
+    gsap.globalTimeline.pause(); // ホバー時に全アニメーションを停止
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+    gsap.globalTimeline.resume(); // ホバー解除時にアニメーションを再開
+  };
 
   return (
     <section id="home" className="home">
@@ -85,20 +103,35 @@ const Home: React.FC = () => {
           <div
             key={index}
             ref={(el) => (iconRefs.current[index] = el)}
-            className="icon"
-            style={{ color: icon.color }}
-            onMouseEnter={() => {
-              gsap.globalTimeline.pause; // ホバー時に停止
+            className={`icon ${index === currentIndex ? "visible" : "hidden"}`}
+            style={{
+              color: index === currentIndex ? icons[index].color : "transparent",
             }}
-            onMouseLeave={() => {
-              gsap.globalTimeline.resume(); // ホバー解除時に再開
-            }}
+            onMouseEnter={() => handleMouseEnter(index)}
+            onMouseLeave={() => handleMouseLeave()}
           >
-            {icon.icon}
-            <div className="popup">{icon.name}</div> {/* ポップアップの表示 */}
+            {index === currentIndex && icons[index].icon}
           </div>
         ))}
       </div>
+
+      {hoveredIndex !== null && hoveredIndex >= 0 && hoveredIndex < icons.length && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-icon"
+              style={{ color: icons[hoveredIndex].color }}>
+              {icons[hoveredIndex].icon}
+            </div>
+            <div className="modal-rating">
+              {"★".repeat(icons[hoveredIndex].rating)}
+              {"☆".repeat(5 - icons[hoveredIndex].rating)}
+            </div>
+            <div className="modal-comment">
+              {icons[hoveredIndex].comment}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
