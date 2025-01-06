@@ -1,3 +1,18 @@
+.icon {
+  font-size: 200px;
+  /* width: 200px;
+  height: 200px; */
+}
+
+.icon.hidden {
+  display: none;
+  pointer-events: none;
+}
+
+.icon.visible {
+  opacity: 1;
+}
+
 .modal {
   position: fixed;
   top: 50%;
@@ -31,20 +46,4 @@
 .modal-comment {
   font-size: 16px;
   color: #333;
-}
-
-.icon {
-  position: relative;
-  display: inline-block;
-  margin: 10px;
-  font-size: 400px;
-  transition: transform 0.3s;
-}
-
-/* .icon:hover {
-  transform: scale(1.2);
-} */
-
-.icon.hidden {
-  display: none;
 }
