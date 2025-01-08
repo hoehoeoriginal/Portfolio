@@ -1,16 +1,10 @@
 .icon {
   font-size: 200px;
-  /* width: 200px;
-  height: 200px; */
-}
-
-.icon.hidden {
-  display: none;
-  pointer-events: none;
-}
-
-.icon.visible {
-  opacity: 1;
+  /* 必要に応じて調整 */
+  width: 200px;
+  height: 200px;
+  transition: color 0.3s ease;
+  /* 色変更時のスムーズなトランジション */
 }
 
 .modal {
