@@ -1,9 +1,9 @@
 .icon {
-  font-size: 200px;
+  /* font-size: 100px; */
   /* 必要に応じて調整 */
   width: 200px;
   height: 200px;
-  transition: color 0.3s ease;
+  transition: color 0.3s;
   /* 色変更時のスムーズなトランジション */
 }
 
@@ -40,4 +40,16 @@
 .modal-comment {
   font-size: 16px;
   color: #333;
+}
+
+.icon {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+  font-size: 200px;
+  transition: transform 0.3s;
+}
+
+.icon.hidden {
+  display: none;
 }

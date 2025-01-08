@@ -19,16 +19,16 @@ const Home: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const icons = [
-    { icon: <FaHtml5 />, color: "#E34F26", name: "HTML5", rating: 5, comment: "Webページの基本構造" },
-    { icon: <FaCss3Alt />, color: "#1572B6", name: "CSS3", rating: 4, comment: "スタイリングが可能" },
-    { icon: <FaJsSquare />, color: "#F7DF1E", name: "JavaScript", rating: 3, comment: "動的な動作を実現" },
-    { icon: <SiTypescript />, color: "#007ACC", name: "TypeScript", rating: 1, comment: "型安全なJS" },
-    { icon: <FaReact />, color: "#61DBFB", name: "React", rating: 2, comment: "コンポーネントベースのUI" },
-    { icon: <FaGithub />, color: "#333", name: "GitHub", rating: 4, comment: "コード管理プラットフォーム" },
-    { icon: <DiVisualstudio />, color: "#5C2D91", name: "Visual Studio", rating: 4, comment: "強力なIDE" },
-    { icon: <SiC />, color: "#A8B9CC", name: "C", rating: 5, comment: "低レベルプログラミング" },
-    { icon: <SiCplusplus />, color: "#00599C", name: "C++", rating: 5, comment: "高性能プログラミング" },
-    { icon: <SiProgate />, color: "#F5A623", name: "Progate", rating: 4, comment: "初心者向け学習サイト" },
+    { icon: <FaHtml5 color={"#E34F26"} />, name: "HTML5", rating: 5, comment: "Webページの基本構造" },
+    { icon: <FaCss3Alt color={"#1572B6"} />, color: "", name: "CSS3", rating: 4, comment: "スタイリングが可能" },
+    { icon: <FaJsSquare color={"#F7DF1E"} />, name: "JavaScript", rating: 3, comment: "動的な動作を実現" },
+    { icon: <SiTypescript color={"#007ACC"} />, name: "TypeScript", rating: 1, comment: "型安全なJS" },
+    { icon: <FaReact color={"#61DBFB"} />, name: "React", rating: 2, comment: "コンポーネントベースのUI" },
+    { icon: <FaGithub color={"#333"} />, name: "GitHub", rating: 4, comment: "コード管理プラットフォーム" },
+    { icon: <DiVisualstudio color={"#5C2D91"} />, name: "Visual Studio", rating: 4, comment: "強力なIDE" },
+    { icon: <SiC color={"#A8B9CC"} />, name: "C", rating: 5, comment: "低レベルプログラミング" },
+    { icon: <SiCplusplus color={"#00599C"} />, name: "C++", rating: 5, comment: "高性能プログラミング" },
+    { icon: <SiProgate color={"#F5A623"} />, name: "Progate", rating: 4, comment: "初心者向け学習サイト" },
   ];
 
   // ランダムに8方向の移動を設定
@@ -49,7 +49,7 @@ const Home: React.FC = () => {
 
     if (isAnimating || !iconElement) return; // アニメーション中の場合はスキップ
 
-    // const iconSize: number = 200; // アイコンサイズ（px単位）
+    const iconSize: number = 200; // アイコンサイズ（px単位）
     const randomDirection =
       directions[Math.floor(Math.random() * directions.length)];
 
@@ -73,19 +73,15 @@ const Home: React.FC = () => {
     }).fromTo(
       iconElement,
       {
-        x: window.innerWidth * (startX / 100),
-        y: window.innerHeight * (startY / 100),
-        // x: window.innerWidth * (startX / 100) - iconSize / 2,
-        // y: window.innerHeight * (startY / 100) - iconSize / 2,
+        x: window.innerWidth * (startX / 100) - iconSize / 2,
+        y: window.innerHeight * (startY / 100) - iconSize / 2,
         opacity: 1,
       },
       {
-        x: window.innerWidth * (endX / 100),
-        y: window.innerHeight * (endY / 100),
-        // x: window.innerWidth * (endX / 100) - iconSize / 2,
-        // y: window.innerHeight * (endY / 100) - iconSize / 2,
+        x: window.innerWidth * (endX / 100) - iconSize / 2,
+        y: window.innerHeight * (endY / 100) - iconSize / 2,
         opacity: 1,
-        duration: 5,
+        duration: 3,
       }
     );
   };
@@ -94,26 +90,7 @@ const Home: React.FC = () => {
     if (hoveredIndex === null && !isAnimating) {
       animateIcon(); // ホバー中でなければアニメーションを実行
     }
-
-    // 現在のアイコンの色を設定
-    iconRefs.current.forEach((icon, index) => {
-      if (icon) {
-        const color = icon.getAttribute("data-color");
-        if (index === currentIndex) {
-          icon.style.color = color || "transparent";
-        } else {
-          icon.style.color = "transparent";
-        }
-      }
-    });
-
-    // モーダルのアイコンの色を設定
-    const modalIcon = document.querySelector(".modal-icon") as HTMLDivElement | null;
-    if (modalIcon && hoveredIndex !== null) {
-      const color = modalIcon.getAttribute("data-color");
-      modalIcon.style.color = color || "transparent";
-    }
-  }, [currentIndex, hoveredIndex]); // currentIndex または hoveredIndex が変更されるたびに実行
+  }, [currentIndex]); // currentIndexが変更されるたびに実行
 
   const handleMouseEnter = (index: number) => {
     setHoveredIndex(index);
@@ -133,21 +110,19 @@ const Home: React.FC = () => {
             key={index}
             ref={(el) => (iconRefs.current[index] = el)}
             className={`icon ${index === currentIndex ? "visible" : "hidden"}`}
-            data-color={icons[index].color} // データ属性に色を格納
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={() => handleMouseLeave()}
           >
-            {icon.icon}
+            {icons[index].icon}
           </div>
         ))}
       </div>
 
-      {hoveredIndex !== null && hoveredIndex < icons.length && (
+      {hoveredIndex !== null && hoveredIndex >= 0 && hoveredIndex < icons.length && (
         <div className="modal">
           <div className="modal-content">
             <div
               className="modal-icon $(index === hoveredIndex ? 'visible' : 'hidden')"
-              data-color={icons[hoveredIndex].color} // データ属性に色を格納
             >
               {icons[hoveredIndex].icon}
             </div>
