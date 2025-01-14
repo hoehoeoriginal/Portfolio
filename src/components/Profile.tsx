@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/Profile.css/";
+import "../css/Profile.css";
 import { FaUserCircle } from "react-icons/fa";
 
 const Profile: React.FC = () => {

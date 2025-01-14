@@ -16,7 +16,7 @@ const Home: React.FC = () => {
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]); // 各アイコンのDOMを参照
   const [currentIndex, setCurrentIndex] = useState(0); // 現在アニメーション中のアイコンを追跡
   const [isAnimating, setIsAnimating] = useState(false); // アニメーション中かどうかを管理
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  // const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const icons = [
     { icon: <FaHtml5 color={"#E34F26"} />, name: "HTML5", rating: 5, comment: "Webページの基本構造" },
@@ -76,66 +76,53 @@ const Home: React.FC = () => {
         x: window.innerWidth * (startX / 100) - iconSize / 2,
         y: window.innerHeight * (startY / 100) - iconSize / 2,
         opacity: 1,
+        rotation: 0, // 回転角度を設定
       },
       {
         x: window.innerWidth * (endX / 100) - iconSize / 2,
         y: window.innerHeight * (endY / 100) - iconSize / 2,
         opacity: 1,
+        rotation: 720, // 回転角度を設定        
         duration: 3,
       }
     );
   };
 
   useEffect(() => {
-    if (hoveredIndex === null && !isAnimating) {
+    if (!isAnimating) {
       animateIcon(); // ホバー中でなければアニメーションを実行
     }
   }, [currentIndex]); // currentIndexが変更されるたびに実行
 
-  const handleMouseEnter = (index: number) => {
-    setHoveredIndex(index);
-    gsap.globalTimeline.pause(); // ホバー時に全アニメーションを停止
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredIndex(null);
-    gsap.globalTimeline.resume(); // ホバー解除時にアニメーションを再開
-  };
-
   return (
     <section id="home" className="home">
       <div className="icons">
-        {icons.map((icon, index) => (
+        {icons.map((_, index) => (
           <div
             key={index}
             ref={(el) => (iconRefs.current[index] = el)}
             className={`icon ${index === currentIndex ? "visible" : "hidden"}`}
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={() => handleMouseLeave()}
           >
             {icons[index].icon}
           </div>
         ))}
       </div>
 
-      {hoveredIndex !== null && hoveredIndex >= 0 && hoveredIndex < icons.length && (
+      {currentIndex >= 0 && currentIndex < icons.length ? (
         <div className="modal">
           <div className="modal-content">
-            <div
-              className="modal-icon $(index === hoveredIndex ? 'visible' : 'hidden')"
-            >
-              {icons[hoveredIndex].icon}
+            <div className="modal-icon">
+              {icons[currentIndex].icon}
             </div>
+            <div className="modal-name">{icons[currentIndex].name}</div>
             <div className="modal-rating">
-              {"★".repeat(icons[hoveredIndex].rating)}
-              {"☆".repeat(5 - icons[hoveredIndex].rating)}
+              {"★".repeat(icons[currentIndex].rating)}
+              {"☆".repeat(5 - icons[currentIndex].rating)}
             </div>
-            <div className="modal-comment">
-              {icons[hoveredIndex].comment}
-            </div>
+            <div className="modal-comment">{icons[currentIndex].comment}</div>
           </div>
         </div>
-      )}
+      ) : null}
     </section>
   );
 };

@@ -11,11 +11,6 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <div className="logo">My Portfolio</div>
-      <div className={`hamburger ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
-        <div className="line"></div>
-        <div className="line"></div>
-        <div className="line"></div>
-      </div>
       {menuOpen && (
         <nav className="menu">
           <ul>
@@ -25,6 +20,11 @@ const Header: React.FC = () => {
           </ul>
         </nav>
       )}
+      <div className={`hamburger ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
+        <div className="line"></div>
+        <div className="line"></div>
+        <div className="line"></div>
+      </div>
     </header>
   );
 };

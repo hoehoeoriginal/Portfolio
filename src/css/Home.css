@@ -1,3 +1,17 @@
+.home {
+  background-image: url('/public/Milkyway.jpg');
+  /* 背景画像のパスを指定 */
+  background-size: cover;
+  /* 画像をコンテナ全体に表示 */
+  background-position: center;
+  /* 画像の中心を表示 */
+  background-repeat: no-repeat;
+  /* 画像を繰り返さない */
+  height: 100vh;
+  /* 画面全体を覆う */
+  /* z-index: 500; */
+}
+
 .icon {
   /* font-size: 100px; */
   /* 必要に応じて調整 */
@@ -29,6 +43,12 @@
 .modal-icon {
   font-size: 200px;
   margin-bottom: 10px;
+}
+
+.modal-name {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: red;
 }
 
 .modal-rating {
