@@ -5,7 +5,6 @@
   justify-content: center;
   flex-direction: column;
   min-height: 100vh;
-  background: url('/Milkyway.jpg') no-repeat center center/cover;
   /* 修正: 背景画像の適用 */
   color: white;
 }

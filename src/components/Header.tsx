@@ -11,19 +11,17 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <div className="logo">My Portfolio</div>
-      {menuOpen && (
-        <nav className="menu">
+      <div className="menu-container">
+        <button className={`menu-toggle ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
+          {menuOpen ? "×" : "＋"}
+        </button>
+        <nav className={`menu ${menuOpen ? "open" : ""}`}>
           <ul>
             <li><a href="#home" onClick={toggleMenu}>HOME</a></li>
             <li><a href="#profile" onClick={toggleMenu}>PROFILE</a></li>
             <li><a href="#contact" onClick={toggleMenu}>CONTACT</a></li>
           </ul>
         </nav>
-      )}
-      <div className={`hamburger ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
-        <div className="line"></div>
-        <div className="line"></div>
-        <div className="line"></div>
       </div>
     </header>
   );

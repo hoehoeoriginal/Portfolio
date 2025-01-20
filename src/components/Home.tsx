@@ -17,6 +17,7 @@ const Home: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0); // 現在アニメーション中のアイコンを追跡
   const [isAnimating, setIsAnimating] = useState(false); // アニメーション中かどうかを管理
   // const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  // const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
 
   const icons = [
     { icon: <FaHtml5 color={"#E34F26"} />, name: "HTML5", rating: 5, comment: "Webページの基本構造" },
@@ -60,41 +61,67 @@ const Home: React.FC = () => {
     const endX = randomDirection.endX;
     const endY = randomDirection.endY;
 
+    // const startX = window.innerWidth * randomDirection.startX / 100;
+    // const startY = window.innerHeight * randomDirection.startY / 100;
+    // const endX = window.innerWidth * randomDirection.endX / 100;
+    // const endY = window.innerHeight * randomDirection.endY / 100;
+
     // デバッグ用ログ
     console.log("Animation Debug Info:");
-    console.log(`Start Position: ${window.innerWidth * startX / 100}, ${window.innerHeight * startY / 100}`);
-    // console.log(`End Position: (${endX}vw, ${endY}vh)`);
+    console.log(`Position: ${startX}px, ${startY}px`);
+    console.log(`Position: ${endX}px, ${endY}px`);
+    // console.log(`Start Position: ${window.innerWidth * startX / 100}, ${window.innerHeight * startY / 100}`);
 
-    gsap.timeline({
+    const tl = gsap.timeline({// timelineのインスタンスを変数に格納
+      onStart: () => {
+        console.log(`Startindex: ${currentIndex}`);
+      },
+      // onUpdate: () => {
+      //   setCoordinates // アニメーション中の座標を更新
+      //     ({
+      //       x: iconElement.getBoundingClientRect().x + iconElement.clientWidth / 2,
+      //       y: iconElement.getBoundingClientRect().y + iconElement.clientHeight / 2,
+      //     });
+      // },
       onComplete: () => {
+        tl.kill(); // アニメーション完了時にtimelineのインスタンスを削除      
         setIsAnimating(false); // アニメーション終了フラグを解除
-        setCurrentIndex((prev) => (prev + 1) % icons.length); // 次のアイコンへ
+        setCurrentIndex((currentIndex + 1) % icons.length); // 次のアイコンへ
+        //   setCurrentIndex((prev) => (prev + 1) % icons.length); // 次のアイコンへ
+        console.log(`Endindex: ${currentIndex}`);  // 0 0 2 3... 1週目 0 1 2 3... 2週目
       },
     }).fromTo(
       iconElement,
       {
-        x: window.innerWidth * (startX / 100) - iconSize / 2,
-        y: window.innerHeight * (startY / 100) - iconSize / 2,
+        x: 0 - iconSize / 2,
+        y: 0 - iconSize / 2,
+        // x: window.innerWidth * (100 / 100),
+        // y: window.innerHeight * (100 / 100),
+        // x: window.innerWidth * (startX / 100) - iconSize / 2,
+        // y: window.innerHeight * (startY / 100) - iconSize / 2,
         opacity: 1,
-        rotation: 0, // 回転角度を設定
+        rotation: 0.01, // 回転角度を設定
       },
       {
-        x: window.innerWidth * (endX / 100) - iconSize / 2,
-        y: window.innerHeight * (endY / 100) - iconSize / 2,
+        x: window.innerWidth * (100 / 100) - iconSize / 2,
+        y: window.innerHeight * (100 / 100) - iconSize / 2,
+        // x: window.innerWidth * (endX / 100) - iconSize / 2,
+        // y: window.innerHeight * (endY / 100) - iconSize / 2,
         opacity: 1,
         rotation: 720, // 回転角度を設定        
-        duration: 3,
+        duration: 15,
       }
     );
+
   };
 
+  // アニメーション中でない場合にアニメーションを開始
   useEffect(() => {
-    if (!isAnimating) {
-      animateIcon(); // ホバー中でなければアニメーションを実行
-    }
+    if (!isAnimating) { animateIcon(); }
   }, [currentIndex]); // currentIndexが変更されるたびに実行
 
   return (
+
     <section id="home" className="home">
       <div className="icons">
         {icons.map((_, index) => (
@@ -107,6 +134,11 @@ const Home: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* <div className="coordinates">
+        <p>X座標: {Math.floor(coordinates.x).toFixed(3)}</p>
+        <p>Y座標: {Math.floor(coordinates.y).toFixed(3)}</p>
+      </div> */}
 
       {currentIndex >= 0 && currentIndex < icons.length ? (
         <div className="modal">
@@ -123,6 +155,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       ) : null}
+
     </section>
   );
 };
