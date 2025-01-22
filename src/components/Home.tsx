@@ -16,19 +16,27 @@ const Home: React.FC = () => {
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]); // 各アイコンのDOMを参照
   const [currentIndex, setCurrentIndex] = useState(0); // 現在アニメーション中のアイコンを追跡
   const [isAnimating, setIsAnimating] = useState(false); // アニメーション中かどうかを管理
-  // const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
+
+  // 関数コンポーネントのスコープに移動
+  const ICON_SIZE = 200; // アイコンサイズ（px単位）
+  // 中央寄せの為の式を定数化
+  const HALF_ICON_SIZE = ICON_SIZE / 2;
+
+  // window sizeの定数
+  const WINDOW_WIDTH = window.innerWidth;
+  const WINDOW_HEIGHT = window.innerHeight;
 
   const icons = [
-    { icon: <FaHtml5 color={"#E34F26"} />, name: "HTML5", rating: 5, comment: "Webページの基本構造" },
-    { icon: <FaCss3Alt color={"#1572B6"} />, color: "", name: "CSS3", rating: 4, comment: "スタイリングが可能" },
-    { icon: <FaJsSquare color={"#F7DF1E"} />, name: "JavaScript", rating: 3, comment: "動的な動作を実現" },
-    { icon: <SiTypescript color={"#007ACC"} />, name: "TypeScript", rating: 1, comment: "型安全なJS" },
-    { icon: <FaReact color={"#61DBFB"} />, name: "React", rating: 2, comment: "コンポーネントベースのUI" },
-    { icon: <FaGithub color={"#333"} />, name: "GitHub", rating: 4, comment: "コード管理プラットフォーム" },
-    { icon: <DiVisualstudio color={"#5C2D91"} />, name: "Visual Studio", rating: 4, comment: "強力なIDE" },
-    { icon: <SiC color={"#A8B9CC"} />, name: "C", rating: 5, comment: "低レベルプログラミング" },
-    { icon: <SiCplusplus color={"#00599C"} />, name: "C++", rating: 5, comment: "高性能プログラミング" },
-    { icon: <SiProgate color={"#F5A623"} />, name: "Progate", rating: 4, comment: "初心者向け学習サイト" },
+    { icon: <FaHtml5 color={"#E34F26"} size={ICON_SIZE} />, name: "HTML5", rating: 5, comment: "Webページの基本構造" },
+    { icon: <FaCss3Alt color={"#1572B6"} size={ICON_SIZE} />, color: "", name: "CSS3", rating: 4, comment: "スタイリングが可能" },
+    { icon: <FaJsSquare color={"#F7DF1E"} size={ICON_SIZE} />, name: "JavaScript", rating: 3, comment: "動的な動作を実現" },
+    { icon: <SiTypescript color={"#007ACC"} size={ICON_SIZE} />, name: "TypeScript", rating: 1, comment: "型安全なJS" },
+    { icon: <FaReact color={"#61DBFB"} size={ICON_SIZE} />, name: "React", rating: 2, comment: "コンポーネントベースのUI" },
+    { icon: <FaGithub color={"#333"} size={ICON_SIZE} />, name: "GitHub", rating: 4, comment: "コード管理プラットフォーム" },
+    { icon: <DiVisualstudio color={"#5C2D91"} size={ICON_SIZE} />, name: "Visual Studio", rating: 4, comment: "強力なIDE" },
+    { icon: <SiC color={"#A8B9CC"} size={ICON_SIZE} />, name: "C", rating: 5, comment: "低レベルプログラミング" },
+    { icon: <SiCplusplus color={"#00599C"} size={ICON_SIZE} />, name: "C++", rating: 5, comment: "高性能プログラミング" },
+    { icon: <SiProgate color={"#F5A623"} size={ICON_SIZE} />, name: "Progate", rating: 4, comment: "初心者向け学習サイト" },
   ];
 
   // ランダムに8方向の移動を設定
@@ -46,50 +54,58 @@ const Home: React.FC = () => {
     return directions[Math.floor(Math.random() * directions.length)];
   };
 
+  // pxからviewに変換する関数
+  const px2view = (pxNum: number) => { return pxNum / 100; }
+
+  // X軸のアニメーションの開始位置と終了位置を設定
+  const setX = (startX: number, endX: number) => {
+    const sX = WINDOW_WIDTH * px2view(startX) - HALF_ICON_SIZE;
+    const eX = WINDOW_WIDTH * px2view(endX) - HALF_ICON_SIZE;
+    return { sX, eX };
+  };
+  // Y軸のアニメーションの開始位置と終了位置を設定
+  const setY = (startY: number, endY: number) => {
+    const sY = WINDOW_HEIGHT * px2view(startY) - HALF_ICON_SIZE;
+    const eY = WINDOW_HEIGHT * px2view(endY) - HALF_ICON_SIZE;
+    return { sY, eY };
+  };
+
   // アニメーション開始
   const animateIcon = () => {
     const iconElement = iconRefs.current[currentIndex];
 
     if (isAnimating || !iconElement) return; // アニメーション中の場合はスキップ
 
-    const iconSize: number = 200; // アイコンサイズ（px単位）
-    const randomDirection = getRandomDirection();
-    const startX = randomDirection.startX;
-    const startY = randomDirection.startY;
-    const endX = randomDirection.endX;
-    const endY = randomDirection.endY;
-    const x1 = window.innerWidth * (startX / 100) - iconSize / 2;
-    const y1 = window.innerHeight * (startY / 100) - iconSize / 2;
-    const x2 = window.innerWidth * (endX / 100) - iconSize / 2;
-    const y2 = window.innerHeight * (endY / 100) - iconSize / 2;
+    const { startX, startY, endX, endY } = getRandomDirection();
+    const { sX, eX } = setX(startX, endX);
+    const { sY, eY } = setY(startY, endY);
 
     // デバッグ用ログ
     console.log("Animation Debug Info:");
     console.log(`Position: ${startX}%, ${startY}%`);
     console.log(`Position: ${endX}%, ${endY}%`);
 
-    const tl = gsap.timeline({  // timelineのインスタンスを変数に格納
-      onStart: () => {
-        setIsAnimating(true); // アニメーション中フラグを設定
-        console.log(`Startindex: ${currentIndex} `);
+    const tl = gsap
+      .timeline({  // timelineのインスタンスを変数に格納
+        onStart: () => {
+          setIsAnimating(true); // アニメーション中フラグを設定
+          console.log(`Startindex: ${currentIndex} `);
+        },
+        onComplete: () => {
+          tl.kill(); // アニメーション完了時にtimelineのインスタンスを削除
+          gsap.set(iconRefs.current[currentIndex + 1], { x: sX, y: sY, rotation: 0, });
+          setIsAnimating(false); // アニメーション終了フラグを解除
+          console.log(`Endindex: ${currentIndex}`);
 
-        gsap.set(iconRefs.current[currentIndex], { x: x1, y: y1, rotation: 0, });
-      },
-      onComplete: () => {
-        tl.kill(); // アニメーション完了時にtimelineのインスタンスを削除
-
-        setIsAnimating(false); // アニメーション終了フラグを解除
-        console.log(`Endindex: ${currentIndex}`);
-
-        // const nextIndex = (currentIndex + 1) % icons.length; // 次のアイコンのインデックスを取得
-        // gsap.set(iconRefs.current[nextIndex], { x: x1, y: y1, rotation: 0, });
-        setCurrentIndex((currentIndex + 1) % icons.length); // 次のアイコンへ
-      },
-    }).to(
-      iconElement,
-      // { x: x1, y: y1, opacity: 1, rotation: 0, },
-      { x: x2, y: y2, opacity: 1, rotation: 720, duration: 7, },
-    );
+          // const nextIndex = (currentIndex + 1) % icons.length; // 次のアイコンのインデックスを取得
+          // gsap.set(iconRefs.current[nextIndex], { x: x1, y: y1, rotation: 0, });
+          setCurrentIndex((currentIndex + 1) % icons.length); // 次のアイコンへ
+        },
+      })
+      .to(
+        iconElement,
+        { x: eX, y: eY, opacity: 1, rotation: 720, duration: 7, ease: "none" },
+      );
   };
 
   // アニメーション中でない場合にアニメーションを開始
