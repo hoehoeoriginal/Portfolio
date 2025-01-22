@@ -16,7 +16,6 @@ const Home: React.FC = () => {
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]); // 各アイコンのDOMを参照
   const [currentIndex, setCurrentIndex] = useState(0); // 現在アニメーション中のアイコンを追跡
   const [isAnimating, setIsAnimating] = useState(false); // アニメーション中かどうかを管理
-  // const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   // const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
 
   const icons = [
@@ -43,6 +42,9 @@ const Home: React.FC = () => {
     { startX: 0, startY: 100, endX: 100, endY: 0 }, // 南西-北東 South-West to North-East
     { startX: 0, startY: 50, endX: 100, endY: 50 }, // 西  -東   West to East
   ];
+  const getRandomDirection = () => {
+    return directions[Math.floor(Math.random() * directions.length)];
+  };
 
   // アニメーション開始
   const animateIcon = () => {
@@ -51,74 +53,48 @@ const Home: React.FC = () => {
     if (isAnimating || !iconElement) return; // アニメーション中の場合はスキップ
 
     const iconSize: number = 200; // アイコンサイズ（px単位）
-    const randomDirection =
-      directions[Math.floor(Math.random() * directions.length)];
-
-    setIsAnimating(true); // アニメーション中フラグを設定
-
+    const randomDirection = getRandomDirection();
     const startX = randomDirection.startX;
     const startY = randomDirection.startY;
     const endX = randomDirection.endX;
     const endY = randomDirection.endY;
-
-    // const startX = window.innerWidth * randomDirection.startX / 100;
-    // const startY = window.innerHeight * randomDirection.startY / 100;
-    // const endX = window.innerWidth * randomDirection.endX / 100;
-    // const endY = window.innerHeight * randomDirection.endY / 100;
+    const x1 = window.innerWidth * (startX / 100) - iconSize / 2;
+    const y1 = window.innerHeight * (startY / 100) - iconSize / 2;
+    const x2 = window.innerWidth * (endX / 100) - iconSize / 2;
+    const y2 = window.innerHeight * (endY / 100) - iconSize / 2;
 
     // デバッグ用ログ
     console.log("Animation Debug Info:");
-    console.log(`Position: ${startX}px, ${startY}px`);
-    console.log(`Position: ${endX}px, ${endY}px`);
-    // console.log(`Start Position: ${window.innerWidth * startX / 100}, ${window.innerHeight * startY / 100}`);
+    console.log(`Position: ${startX}%, ${startY}%`);
+    console.log(`Position: ${endX}%, ${endY}%`);
 
-    const tl = gsap.timeline({// timelineのインスタンスを変数に格納
+    const tl = gsap.timeline({  // timelineのインスタンスを変数に格納
       onStart: () => {
-        console.log(`Startindex: ${currentIndex}`);
-      },
-      // onUpdate: () => {
-      //   setCoordinates // アニメーション中の座標を更新
-      //     ({
-      //       x: iconElement.getBoundingClientRect().x + iconElement.clientWidth / 2,
-      //       y: iconElement.getBoundingClientRect().y + iconElement.clientHeight / 2,
-      //     });
-      // },
-      onComplete: () => {
-        tl.kill(); // アニメーション完了時にtimelineのインスタンスを削除      
-        setIsAnimating(false); // アニメーション終了フラグを解除
-        setCurrentIndex((currentIndex + 1) % icons.length); // 次のアイコンへ
-        //   setCurrentIndex((prev) => (prev + 1) % icons.length); // 次のアイコンへ
-        console.log(`Endindex: ${currentIndex}`);  // 0 0 2 3... 1週目 0 1 2 3... 2週目
-      },
-    }).fromTo(
-      iconElement,
-      {
-        x: 0 - iconSize / 2,
-        y: 0 - iconSize / 2,
-        // x: window.innerWidth * (100 / 100),
-        // y: window.innerHeight * (100 / 100),
-        // x: window.innerWidth * (startX / 100) - iconSize / 2,
-        // y: window.innerHeight * (startY / 100) - iconSize / 2,
-        opacity: 1,
-        rotation: 0.01, // 回転角度を設定
-      },
-      {
-        x: window.innerWidth * (100 / 100) - iconSize / 2,
-        y: window.innerHeight * (100 / 100) - iconSize / 2,
-        // x: window.innerWidth * (endX / 100) - iconSize / 2,
-        // y: window.innerHeight * (endY / 100) - iconSize / 2,
-        opacity: 1,
-        rotation: 720, // 回転角度を設定        
-        duration: 15,
-      }
-    );
+        setIsAnimating(true); // アニメーション中フラグを設定
+        console.log(`Startindex: ${currentIndex} `);
 
+        gsap.set(iconRefs.current[currentIndex], { x: x1, y: y1, rotation: 0, });
+      },
+      onComplete: () => {
+        tl.kill(); // アニメーション完了時にtimelineのインスタンスを削除
+
+        setIsAnimating(false); // アニメーション終了フラグを解除
+        console.log(`Endindex: ${currentIndex}`);
+
+        // const nextIndex = (currentIndex + 1) % icons.length; // 次のアイコンのインデックスを取得
+        // gsap.set(iconRefs.current[nextIndex], { x: x1, y: y1, rotation: 0, });
+        setCurrentIndex((currentIndex + 1) % icons.length); // 次のアイコンへ
+      },
+    }).to(
+      iconElement,
+      // { x: x1, y: y1, opacity: 1, rotation: 0, },
+      { x: x2, y: y2, opacity: 1, rotation: 720, duration: 7, },
+    );
   };
 
   // アニメーション中でない場合にアニメーションを開始
-  useEffect(() => {
-    if (!isAnimating) { animateIcon(); }
-  }, [currentIndex]); // currentIndexが変更されるたびに実行
+  // currentIndexが変更されるたびに実行
+  useEffect(() => { if (!isAnimating) { animateIcon(); } }, [currentIndex]);
 
   return (
 
